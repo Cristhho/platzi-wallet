@@ -1,16 +1,20 @@
 package com.cristianvillamil.platziwallet.ui.transfer
 
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cristianvillamil.platziwallet.R
+import com.cristianvillamil.platziwallet.ui.transfer.data.AppDataBase
+import com.cristianvillamil.platziwallet.ui.transfer.data.TransferEntity
 import kotlinx.android.synthetic.main.fragment_transfer.*
 import java.text.NumberFormat
 
@@ -52,6 +56,30 @@ class TransferFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initAmountInputEditText()
         initRecyclerView()
+        transferButton.setOnClickListener {
+            AppDataBase.getAppDataBase(context!!)?.getDao()?.saveTransfer(TransferEntity(
+                userId = "4688",
+                userName = "Platzi User",
+                transactionDate = "22/03/20",
+                transactionAmount = "50.000",
+                receiverUserId = "18123"
+            ))
+
+            val runnable = Runnable {
+                var userTransferString = ""
+                val transferList = AppDataBase.getAppDataBase(context!!)
+                        ?.getDao()?.findTransfersByUserName("Platzi User")
+
+                transferList!!.forEach {
+                    userTransferString += "\n $it"
+                }
+
+                Toast.makeText(context!!, userTransferString, Toast.LENGTH_SHORT).show()
+            }
+
+            val handler = Handler()
+            handler.postDelayed(runnable, 1500)
+        }
     }
 
     private fun initRecyclerView() {
