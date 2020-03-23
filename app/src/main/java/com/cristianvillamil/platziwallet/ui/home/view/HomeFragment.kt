@@ -17,6 +17,7 @@ import com.cristianvillamil.platziwallet.ui.observable.AvailableBalanceObservabl
 import com.cristianvillamil.platziwallet.ui.observable.Observer
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.percentage_view.view.*
 
 class HomeFragment : Fragment(), HomeContract.View {
 
@@ -40,7 +41,7 @@ class HomeFragment : Fragment(), HomeContract.View {
         initRecyclerView()
         homePresenter = HomePresenter(this)
         homePresenter?.retrieveFavoriteTransfers()
-        circularProgress.setProgressWithAnimation(
+        percentageView.circularProgress.setProgressWithAnimation(
             70f,
             1000,
             AccelerateDecelerateInterpolator(),
@@ -59,7 +60,7 @@ class HomeFragment : Fragment(), HomeContract.View {
 
         homePresenter!!.getPercentageLiveData().observe(this,
             androidx.lifecycle.Observer<String>{value ->
-                percentageText.text = value
+                percentageView.percentageText.text = value
         })
     }
 
